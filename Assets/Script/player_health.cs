@@ -3,13 +3,15 @@ using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
-    [Header("ÑªÁ¿")]
+    [Header("Ñªï¿½ï¿½")]
     [SerializeField] private int maxHealth = 100;
     private int _currentHealth;
 
-    [Header("ÊÜÉËÉÁË¸")]
-    [SerializeField] private float invincibleTime = 1f;
+    [Header("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë¸")]
+    [SerializeField] private float invincibleTime = 0.5f;
     [SerializeField] private float blinkInterval = 0.1f;
+
+    public bool IsRolling { get; private set; }
     private bool _isInvincible;
     private SpriteRenderer _spriteRenderer;
 
@@ -19,14 +21,20 @@ public class PlayerHealth : MonoBehaviour
         _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+    public void SetRolling(bool isRolling)
+    {
+        IsRolling = isRolling;
+    }
+
     public void TakeDamage(int damage)
     {
         if (_isInvincible) return;
+        if (IsRolling) return;
 
         _currentHealth -= damage;
         _currentHealth = Mathf.Max(_currentHealth, 0);
 
-        Debug.Log("ÑªÁ¿£º" + _currentHealth + " / " + maxHealth);
+        Debug.Log("Ñªï¿½ï¿½ï¿½ï¿½" + _currentHealth + " / " + maxHealth);
 
         if (_currentHealth <= 0)
         {
@@ -55,7 +63,6 @@ public class PlayerHealth : MonoBehaviour
 
     private void Die()
     {
-        // ÖØÐÂ¼ÓÔØµ±Ç°³¡¾°
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 

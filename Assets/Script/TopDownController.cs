@@ -4,13 +4,13 @@ using UnityEngine;
 public class TopDownController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 6f;
-
     [HideInInspector] public bool canMove = true;
 
     private Rigidbody2D _rb;
     private Animator _animator;
     private SpriteRenderer _sr;
     private Vector2 _inputDir;
+    private float _speedMultiplier = 1f;
 
     private void Awake()
     {
@@ -37,7 +37,7 @@ public class TopDownController : MonoBehaviour
 
         bool isMoving = _inputDir.sqrMagnitude > 0f;
         _animator.SetBool("isMoving", isMoving);
-        _animator.speed = 1f;  // 始终正常播放，让状态机控制动画
+        _animator.speed = 1f;
 
         if (_inputDir.x > 0f)
         {
@@ -48,17 +48,6 @@ public class TopDownController : MonoBehaviour
         {
             _sr.flipX = false;
             _animator.SetBool("isFacingRight", false);
-        }
-
-        if (_inputDir.x > 0f)
-        {
-            _animator.SetBool("isFacingRight", true);
-            Debug.Log("朝右");
-        }
-        else if (_inputDir.x < 0f)
-        {
-            _animator.SetBool("isFacingRight", false);
-            Debug.Log("朝左");
         }
     }
 
@@ -70,6 +59,11 @@ public class TopDownController : MonoBehaviour
             return;
         }
 
-        _rb.velocity = _inputDir * moveSpeed;
+        _rb.velocity = _inputDir * moveSpeed * _speedMultiplier;
+    }
+
+    public void SetSpeedMultiplier(float multiplier)
+    {
+        _speedMultiplier = multiplier;
     }
 }

@@ -118,6 +118,8 @@ public class PlayerCombat : MonoBehaviour
         Collider2D[] hits = Physics2D.OverlapCircleAll(
             transform.position, attackRange, enemyLayer);
 
+        Debug.Log("¹¥»÷ÃüÖÐÊýÁ¿£º" + hits.Length);
+
         foreach (Collider2D hit in hits)
         {
             Vector2 dirToEnemy = (hit.transform.position - transform.position).normalized;
@@ -125,9 +127,17 @@ public class PlayerCombat : MonoBehaviour
 
             if (angle <= attackAngle * 0.5f)
             {
+                // ¼ì²âÀÇ
                 WolfHealth wolf = hit.GetComponent<WolfHealth>();
                 if (wolf != null)
                     wolf.TakeDamage(attackDamage);
+
+                // ¼ì²âBoss
+                BossHealth boss = hit.GetComponent<BossHealth>();
+                if (boss != null)
+                    boss.TakeDamage(attackDamage);
+
+                Debug.Log("ÃüÖÐ£º" + hit.name);
             }
         }
     }
@@ -151,6 +161,11 @@ public class PlayerCombat : MonoBehaviour
         _controller.enabled = false;
         _animator.SetBool("isRolling", true);
 
+        // ·­¹ö¿ªÊ¼£¬ÃâÒßÉËº¦
+        PlayerHealth health = GetComponent<PlayerHealth>();
+        if (health != null)
+            health.SetRolling(true);
+
         float timer = 0f;
         while (timer < rollDuration)
         {
@@ -163,6 +178,10 @@ public class PlayerCombat : MonoBehaviour
         _animator.SetBool("isRolling", false);
         _controller.enabled = true;
         _isRolling = false;
+
+        // ·­¹ö½áÊø£¬È¡ÏûÃâÒß
+        if (health != null)
+            health.SetRolling(false);
     }
 
     private IEnumerator ShowText(string message, float duration)
